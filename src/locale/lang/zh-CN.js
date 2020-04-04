@@ -21,11 +21,15 @@ export default {
   close_choose: '禁用',
   show_choose: '显示',
   hide_choose: '隐藏',
+  audit_button: '审核',
   interface_request: '请求参数',
   interface_response: '返回参数',
   user_center: '个人中心',
   wiki_list: '文档中心',
   wiki_error: '错误码',
   wiki_calculation: '算法详解',
-  wiki_login: '文档登录'
+  wiki_login: '文档登录',
+  topic_manage: '课题管理',
+  topic_list: '课题列表',
+  topic_set: '课题设置'
 }

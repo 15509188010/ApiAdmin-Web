@@ -264,5 +264,37 @@ export default [
       hideInMenu: true
     },
     component: () => import('@/view/wiki/login.vue')
+  },
+  {
+    path: '/topic',
+    name: 'topic_manage',
+    meta: {
+      icon: 'md-bookmarks',
+      title: '课题管理',
+      access: ['admin/Topic/index','admin/Topic/set']
+    },
+    component: Main,
+    children: [
+      {
+        path: 'list',
+        name: 'topic_list',
+        meta: {
+          icon: 'md-list-box',
+          title: '课题列表',
+          access: 'admin/Topic/index'
+        },
+        component: () => import('@/view/topic/list.vue')
+      },
+      {
+        path: 'set',
+        name: 'topic_set',
+        meta: {
+          icon: 'md-build',
+          title: '课题设置',
+          access: 'admin/Topic/set'
+        },
+        component: () => import('@/view/topic/set.vue')
+      }
+    ]
   }
 ]
