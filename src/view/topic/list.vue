@@ -32,9 +32,10 @@
     <Row>
       <Col span="24">
         <Card>
-          <div class="margin-bottom-15">
-            <Button type="primary" v-has="'AppGroup/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
-          </div>
+          <!--增加按钮-->
+          <!--<div class="margin-bottom-15">-->
+            <!--<Button type="primary" v-has="'AppGroup/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>-->
+          <!--</div>-->
           <div>
             <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
@@ -72,264 +73,279 @@
   </div>
 </template>
 <script>
-  import { getList, changeStatus, add, edit, del } from '@/api/topic'
-  import { getHash } from '@/api/interface'
+// import { getList, changeStatus, add, edit, del } from '@/api/topic'
+import { getList, add } from '@/api/topic'
+import { getHash } from '@/api/interface'
 
-  const auditButton = (vm, h, currentRow, index) => {
-    if (vm.buttonShow.edit) {
-      return h('Button', {
-        props: {
-          type: 'warning'
-        },
-        style: {
-          margin: '0 5px'
-        },
-        on: {
-          'click': () => {
-            vm.formItem.id = currentRow.id
-            vm.formItem.name = currentRow.name
-            vm.formItem.hash = currentRow.hash
-            vm.formItem.description = currentRow.description
-            vm.modalSetting.show = true
-            vm.modalSetting.index = index
-          }
+const auditButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.edit) {
+    return h('Button', {
+      props: {
+        type: 'warning'
+      },
+      style: {
+        margin: '0 5px'
+      },
+      on: {
+        'click': () => {
+          vm.formItem.id = currentRow.id
+          vm.formItem.name = currentRow.name
+          vm.formItem.hash = currentRow.hash
+          vm.formItem.description = currentRow.description
+          vm.modalSetting.show = true
+          vm.modalSetting.index = index
         }
-      }, vm.$t('audit_button'))
-    }
-  };
-
-  const editButton = (vm, h, currentRow, index) => {
-    if (vm.buttonShow.edit) {
-      return h('Button', {
-        props: {
-          type: 'primary'
-        },
-        style: {
-          margin: '0 5px'
-        },
-        on: {
-          'click': () => {
-            vm.formItem.id = currentRow.id
-            vm.formItem.name = currentRow.name
-            vm.formItem.hash = currentRow.hash
-            vm.formItem.description = currentRow.description
-            vm.modalSetting.show = true
-            vm.modalSetting.index = index
-          }
-        }
-      }, vm.$t('edit_button'))
-    }
+      }
+    }, vm.$t('audit_button'))
   }
-  const deleteButton = (vm, h, currentRow, index) => {
-    if (vm.buttonShow.del) {
-      return h('Poptip', {
-        props: {
-          confirm: true,
-          title: '您确定要删除这条数据吗? ',
-          transfer: true
+}
+
+const editButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.edit) {
+    return h('Button', {
+      props: {
+        type: 'primary'
+      },
+      style: {
+        margin: '0 5px'
+      },
+      on: {
+        'click': () => {
+          vm.formItem.id = currentRow.id
+          vm.formItem.name = currentRow.name
+          vm.formItem.hash = currentRow.hash
+          vm.formItem.description = currentRow.description
+          vm.modalSetting.show = true
+          vm.modalSetting.index = index
+        }
+      }
+    }, vm.$t('edit_button'))
+  }
+}
+const deleteButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.del) {
+    return h('Poptip', {
+      props: {
+        confirm: true,
+        title: '您确定要删除这条数据吗? ',
+        transfer: true
+      },
+      on: {
+        'on-ok': () => {
+          del(currentRow.hash).then(response => {
+            vm.tableData.splice(index, 1)
+            vm.$Message.success(response.data.msg)
+          })
+        }
+      }
+    }, [
+      h('Button', {
+        style: {
+          margin: '0 5px'
         },
-        on: {
-          'on-ok': () => {
-            del(currentRow.hash).then(response => {
-              vm.tableData.splice(index, 1)
+        props: {
+          type: 'error',
+          placement: 'top',
+          loading: currentRow.isDeleting
+        }
+      }, vm.$t('delete_button'))
+    ])
+  }
+}
+
+export default {
+  name: 'interface_group',
+  data () {
+    return {
+      columnsList: [
+        {
+          title: '序号',
+          type: 'index',
+          width: 65,
+          align: 'center'
+        },
+        {
+          title: '课题编号',
+          align: 'center',
+          key: 'code',
+          minWidth: 150
+        },
+        {
+          title: '题目',
+          align: 'center',
+          key: 'title',
+          minWidth: 150
+        },
+        {
+          title: '学院',
+          align: 'center',
+          key: 'college',
+          width: 140
+        },
+        {
+          title: '任务书',
+          align: 'center',
+          key: 'taskBook',
+          width: 140
+        },
+        {
+          title: '添加人',
+          align: 'center',
+          key: 'addPeople',
+          width: 120
+        },
+        {
+          title: '审核状态',
+          align: 'center',
+          width: 100,
+          render: (h, params) => {
+            if (params.row.auditStatus === 5) {
+              return h('Tag', {
+                props: {
+                  'color': 'green'
+                }
+              }, '已审核')
+            } else {
+              return h('Tag', {
+                props: {
+                  'color': 'red'
+                }
+              }, '未审核')
+            }
+          }
+        },
+        {
+          title: '操作',
+          align: 'center',
+          width: 250,
+          render: (h, params) => {
+            return h('div', [
+              auditButton(this, h, params.role, params.index),
+              editButton(this, h, params.row, params.index),
+              deleteButton(this, h, params.row, params.index)
+            ])
+          }
+        }
+      ],
+      tableData: [],
+      tableShow: {
+        currentPage: 1,
+        pageSize: 10,
+        listCount: 0
+      },
+      searchConf: {
+        type: '',
+        keywords: '',
+        status: ''
+      },
+      modalSetting: {
+        show: false,
+        loading: false,
+        index: 0
+      },
+      formItem: {
+        description: '',
+        name: '',
+        hash: '',
+        id: 0
+      },
+      ruleValidate: {
+        name: [
+          { required: true, message: '应用组名称不能为空', trigger: 'blur' }
+        ]
+      },
+      buttonShow: {
+        edit: true,
+        del: true,
+        changeStatus: true
+      },
+      listLoading: false
+    }
+  },
+  created () {
+    let vm = this
+    vm.getList()
+    vm.hasRule('AppGroup/edit').then(res => {
+      vm.buttonShow.edit = res
+    })
+    vm.hasRule('AppGroup/del').then(res => {
+      vm.buttonShow.del = res
+    })
+    vm.hasRule('AppGroup/changeStatus').then(res => {
+      vm.buttonShow.changeStatus = res
+    })
+  },
+  methods: {
+    alertAdd () {
+      let vm = this
+      getHash().then(response => {
+        vm.formItem.hash = response.data.data.hash
+      })
+      vm.modalSetting.show = true
+    },
+    submit () {
+      let vm = this
+      vm.$refs['myForm'].validate((valid) => {
+        if (valid) {
+          vm.modalSetting.loading = true
+          if (vm.formItem.id === 0) {
+            add(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            }).catch(() => {
+              vm.modalSetting.loading = false
+            })
+          } else {
+            edit(vm.formItem).then(response => {
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            }).catch(() => {
+              vm.modalSetting.loading = false
             })
           }
         }
-      }, [
-        h('Button', {
-          style: {
-            margin: '0 5px'
-          },
-          props: {
-            type: 'error',
-            placement: 'top',
-            loading: currentRow.isDeleting
-          }
-        }, vm.$t('delete_button'))
-      ])
-    }
-  }
-
-  export default {
-    name: 'interface_group',
-    data () {
-      return {
-        columnsList: [
-          {
-            title: '序号',
-            type: 'index',
-            width: 65,
-            align: 'center'
-          },
-          {
-            title: '课题编号',
-            align: 'center',
-            key: 'code',
-            width: 150
-          },
-          {
-            title: '题目',
-            align: 'center',
-            key: 'title',
-            width: 150
-          },
-          {
-            title: '学院',
-            align: 'center',
-            key: 'college',
-            width: 140
-          },
-          {
-            title: '任务书',
-            align: 'center',
-            key: 'taskBook',
-            width: 140
-          },
-          {
-            title: '添加人',
-            align: 'center',
-            key: 'addPeople',
-            width: 120
-          },
-          {
-            title: '审核状态',
-            align: 'center',
-            key: 'auditStatus',
-            width: 100
-          },
-          {
-            title: '操作',
-            align: 'center',
-            width: 250,
-            render: (h, params) => {
-              return h('div', [
-                auditButton(this, h, params.role, params.index),
-                editButton(this, h, params.row, params.index),
-                deleteButton(this, h, params.row, params.index),
-              ])
-            }
-          }
-        ],
-        tableData: [],
-        tableShow: {
-          currentPage: 1,
-          pageSize: 10,
-          listCount: 0
-        },
-        searchConf: {
-          type: '',
-          keywords: '',
-          status: ''
-        },
-        modalSetting: {
-          show: false,
-          loading: false,
-          index: 0
-        },
-        formItem: {
-          description: '',
-          name: '',
-          hash: '',
-          id: 0
-        },
-        ruleValidate: {
-          name: [
-            { required: true, message: '应用组名称不能为空', trigger: 'blur' }
-          ]
-        },
-        buttonShow: {
-          edit: true,
-          del: true,
-          changeStatus: true
-        },
-        listLoading: false
-      }
+      })
     },
-    created () {
+    cancel () {
+      this.modalSetting.show = false
+    },
+    changePage (page) {
+      this.tableShow.currentPage = page
+      this.getList()
+    },
+    changeSize (size) {
+      this.tableShow.pageSize = size
+      this.getList()
+    },
+    search () {
+      this.tableShow.currentPage = 1
+      this.getList()
+    },
+    getList () {
       let vm = this
-      vm.getList()
-      vm.hasRule('AppGroup/edit').then(res => {
-        vm.buttonShow.edit = res
-      })
-      vm.hasRule('AppGroup/del').then(res => {
-        vm.buttonShow.del = res
-      })
-      vm.hasRule('AppGroup/changeStatus').then(res => {
-        vm.buttonShow.changeStatus = res
+      vm.listLoading = true
+      getList({
+        page: vm.tableShow.currentPage,
+        size: vm.tableShow.pageSize,
+        type: vm.searchConf.type,
+        keywords: vm.searchConf.keywords,
+        status: vm.searchConf.status
+      }).then(response => {
+        vm.tableData = response.data.data.list
+        vm.tableShow.listCount = response.data.data.count
+        vm.listLoading = false
       })
     },
-    methods: {
-      alertAdd () {
-        let vm = this
-        getHash().then(response => {
-          vm.formItem.hash = response.data.data.hash
-        })
-        vm.modalSetting.show = true
-      },
-      submit () {
-        let vm = this
-        vm.$refs['myForm'].validate((valid) => {
-          if (valid) {
-            vm.modalSetting.loading = true
-            if (vm.formItem.id === 0) {
-              add(vm.formItem).then(response => {
-                vm.$Message.success(response.data.msg)
-                vm.getList()
-                vm.cancel()
-              }).catch(() => {
-                vm.modalSetting.loading = false
-              })
-            } else {
-              edit(vm.formItem).then(response => {
-                vm.$Message.success(response.data.msg)
-                vm.getList()
-                vm.cancel()
-              }).catch(() => {
-                vm.modalSetting.loading = false
-              })
-            }
-          }
-        })
-      },
-      cancel () {
-        this.modalSetting.show = false
-      },
-      changePage (page) {
-        this.tableShow.currentPage = page
-        this.getList()
-      },
-      changeSize (size) {
-        this.tableShow.pageSize = size
-        this.getList()
-      },
-      search () {
-        this.tableShow.currentPage = 1
-        this.getList()
-      },
-      getList () {
-        let vm = this
-        vm.listLoading = true
-        getList({
-          page: vm.tableShow.currentPage,
-          size: vm.tableShow.pageSize,
-          type: vm.searchConf.type,
-          keywords: vm.searchConf.keywords,
-          status: vm.searchConf.status
-        }).then(response => {
-          vm.tableData = response.data.data.list
-          vm.tableShow.listCount = response.data.data.count
-          vm.listLoading = false
-        })
-      },
-      doCancel (data) {
-        if (!data) {
-          this.formItem.id = 0
-          this.$refs['myForm'].resetFields()
-          this.modalSetting.loading = false
-          this.modalSetting.index = 0
-        }
+    doCancel (data) {
+      if (!data) {
+        this.formItem.id = 0
+        this.$refs['myForm'].resetFields()
+        this.modalSetting.loading = false
+        this.modalSetting.index = 0
       }
     }
   }
+}
 </script>

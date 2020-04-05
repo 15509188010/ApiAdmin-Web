@@ -29,7 +29,13 @@ export default {
   wiki_error: '错误码',
   wiki_calculation: '算法详解',
   wiki_login: '文档登录',
-  topic_manage: '课题管理',
+  topic_manage: '超管课题管理',
   topic_list: '课题列表',
-  topic_set: '课题设置'
+  topic_set: '课题设置',
+  topic_teach_manage: '指导选题管理',
+  topic_add: '创建选题',
+  topic_my: '我的选题',
+  topic_student_audit: '学员选题审核',
+  topic_student_manage: '学员选题管理',
+  topic_show: '查看选题进度'
 }

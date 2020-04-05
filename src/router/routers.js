@@ -16,285 +16,351 @@ import Main from '@/components/main'
  * }
  */
 
-export default [
-  {
-    path: '/login',
-    name: 'login',
-    meta: {
-      title: '登录',
-      hideInMenu: true
-    },
-    component: () => import('@/view/login/login.vue')
+export default [{
+  path: '/login',
+  name: 'login',
+  meta: {
+    title: '登录',
+    hideInMenu: true
   },
-  {
-    path: '/login/:loginType',
-    name: 'login',
-    meta: {
-      title: '登录',
-      hideInMenu: true
-    },
-    component: () => import('@/view/login/login.vue')
+  component: () => import('@/view/login/login.vue')
+},
+{
+  path: '/login/:loginType',
+  name: 'login',
+  meta: {
+    title: '登录',
+    hideInMenu: true
   },
-  {
-    path: '/',
-    name: '_home',
-    redirect: '/home',
-    component: Main,
+  component: () => import('@/view/login/login.vue')
+},
+{
+  path: '/',
+  name: '_home',
+  redirect: '/home',
+  component: Main,
+  meta: {
+    hideInMenu: true,
+    notCache: true
+  },
+  children: [{
+    path: '/home',
+    name: 'home',
     meta: {
       hideInMenu: true,
-      notCache: true
+      title: '首页',
+      notCache: true,
+      icon: 'md-home'
     },
-    children: [
-      {
-        path: '/home',
-        name: 'home',
-        meta: {
-          hideInMenu: true,
-          title: '首页',
-          notCache: true,
-          icon: 'md-home'
-        },
-        component: () => import('@/view/single-page/home')
-      },
-      {
-        path: '/user-center',
-        name: 'user_center',
-        meta: {
-          hideInMenu: true,
-          title: '个人中心',
-          notCache: true,
-          icon: 'md-home',
-          access: 'admin/User/own'
-        },
-        component: () => import('@/view/single-page/own/own.vue')
-      }
-    ]
+    component: () => import('@/view/single-page/home')
   },
   {
-    path: '/system',
-    name: 'system_setting',
+    path: '/user-center',
+    name: 'user_center',
     meta: {
-      icon: 'ios-build',
-      title: '系统配置',
-      access: ['admin/Menu/index', 'admin/User/index', 'admin/Auth/index', 'admin/Log/index']
+      hideInMenu: true,
+      title: '个人中心',
+      notCache: true,
+      icon: 'md-home',
+      access: 'admin/User/own'
     },
-    component: Main,
-    children: [
-      {
-        path: 'menu',
-        name: 'menu_setting',
-        meta: {
-          icon: 'md-menu',
-          title: '菜单维护',
-          access: 'admin/Menu/index'
-        },
-        component: () => import('@/view/system/menu.vue')
-      },
-      {
-        path: 'user',
-        name: 'user_setting',
-        meta: {
-          icon: 'ios-people',
-          title: '用户管理',
-          access: 'admin/User/index'
-        },
-        component: () => import('@/view/system/user.vue')
-      },
-      {
-        path: 'auth',
-        name: 'auth_setting',
-        meta: {
-          icon: 'md-lock',
-          title: '权限管理',
-          access: 'admin/Auth/index'
-        },
-        component: () => import('@/view/system/auth.vue')
-      },
-      {
-        path: 'log',
-        name: 'logs',
-        meta: {
-          icon: 'md-clipboard',
-          title: '操作日志',
-          access: 'admin/Log/index'
-        },
-        component: () => import('@/view/system/log.vue')
-      }
-    ]
-  },
-  {
-    path: '/apps',
-    name: 'apps_setting',
-    meta: {
-      icon: 'md-cloud',
-      title: '应用接入',
-      access: ['admin/AppGroup/index', 'admin/App/index']
-    },
-    component: Main,
-    children: [
-      {
-        path: 'appsGroup',
-        name: 'apps_group',
-        meta: {
-          icon: 'ios-archive',
-          title: '应用分组',
-          access: 'admin/AppGroup/index'
-        },
-        component: () => import('@/view/app/group.vue')
-      },
-      {
-        path: 'appsList',
-        name: 'apps_list',
-        meta: {
-          icon: 'md-list-box',
-          title: '应用列表',
-          access: 'admin/App/index'
-        },
-        component: () => import('@/view/app/list.vue')
-      }
-    ]
-  },
-  {
-    path: '/interface',
-    name: 'interface_setting',
-    meta: {
-      icon: 'ios-link',
-      title: '接口管理',
-      access: ['admin/InterfaceList/index', 'admin/InterfaceGroup/index']
-    },
-    component: Main,
-    children: [
-      {
-        path: 'interfaceGroup',
-        name: 'interface_group',
-        meta: {
-          icon: 'md-archive',
-          title: '接口分组',
-          access: 'admin/InterfaceGroup/index'
-        },
-        component: () => import('@/view/interface/group.vue')
-      },
-      {
-        path: 'interfaceList',
-        name: 'interface_list',
-        meta: {
-          icon: 'md-infinite',
-          title: '接口列表',
-          access: 'admin/InterfaceList/index'
-        },
-        component: () => import('@/view/interface/list.vue')
-      },
-      {
-        path: 'request/:hash',
-        meta: {
-          title: '请求参数',
-          hideInMenu: true
-        },
-        name: 'interface_request',
-        component: () => import('@/view/interface/request.vue')
-      },
-      {
-        path: 'response/:hash',
-        hideInMenu: true,
-        meta: {
-          hideInMenu: true,
-          title: '返回参数'
-        },
-        name: 'interface_response',
-        component: () => import('@/view/interface/response.vue')
-      }
-    ]
-  },
-  {
-    path: '/401',
-    name: 'error_401',
-    meta: {
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/401.vue')
-  },
-  {
-    path: '/500',
-    name: 'error_500',
-    meta: {
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/500.vue')
-  },
-  {
-    path: '*',
-    name: 'error_404',
-    meta: {
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/404.vue')
-  },
-  {
-    path: '/wiki/list',
-    name: 'wiki_list',
-    meta: {
-      title: '文档列表',
-      hideInMenu: true
-    },
-    component: () => import('@/view/wiki/list.vue')
-  },
-  {
-    path: '/wiki/error',
-    name: 'wiki_error',
-    meta: {
-      title: '错误码',
-      hideInMenu: true
-    },
-    component: () => import('@/view/wiki/error-code.vue')
-  },
-  {
-    path: '/wiki/calculation',
-    name: 'wiki_calculation',
-    meta: {
-      title: '算法详解',
-      hideInMenu: true
-    },
-    component: () => import('@/view/wiki/calculation.vue')
-  },
-  {
-    path: '/wiki/login',
-    name: 'wiki_login',
-    meta: {
-      title: '文档登录',
-      hideInMenu: true
-    },
-    component: () => import('@/view/wiki/login.vue')
-  },
-  {
-    path: '/topic',
-    name: 'topic_manage',
-    meta: {
-      icon: 'md-bookmarks',
-      title: '课题管理',
-      access: ['admin/Topic/index','admin/Topic/set']
-    },
-    component: Main,
-    children: [
-      {
-        path: 'list',
-        name: 'topic_list',
-        meta: {
-          icon: 'md-list-box',
-          title: '课题列表',
-          access: 'admin/Topic/index'
-        },
-        component: () => import('@/view/topic/list.vue')
-      },
-      {
-        path: 'set',
-        name: 'topic_set',
-        meta: {
-          icon: 'md-build',
-          title: '课题设置',
-          access: 'admin/Topic/set'
-        },
-        component: () => import('@/view/topic/set.vue')
-      }
-    ]
+    component: () => import('@/view/single-page/own/own.vue')
   }
+  ]
+},
+{
+  path: '/system',
+  name: 'system_setting',
+  meta: {
+    icon: 'ios-build',
+    title: '系统配置',
+    access: ['admin/Menu/index', 'admin/User/index', 'admin/Auth/index', 'admin/Log/index']
+  },
+  component: Main,
+  children: [{
+    path: 'menu',
+    name: 'menu_setting',
+    meta: {
+      icon: 'md-menu',
+      title: '菜单维护',
+      access: 'admin/Menu/index'
+    },
+    component: () => import('@/view/system/menu.vue')
+  },
+  {
+    path: 'user',
+    name: 'user_setting',
+    meta: {
+      icon: 'ios-people',
+      title: '用户管理',
+      access: 'admin/User/index'
+    },
+    component: () => import('@/view/system/user.vue')
+  },
+  {
+    path: 'auth',
+    name: 'auth_setting',
+    meta: {
+      icon: 'md-lock',
+      title: '权限管理',
+      access: 'admin/Auth/index'
+    },
+    component: () => import('@/view/system/auth.vue')
+  },
+  {
+    path: 'log',
+    name: 'logs',
+    meta: {
+      icon: 'md-clipboard',
+      title: '操作日志',
+      access: 'admin/Log/index'
+    },
+    component: () => import('@/view/system/log.vue')
+  }
+  ]
+},
+{
+  path: '/apps',
+  name: 'apps_setting',
+  meta: {
+    icon: 'md-cloud',
+    title: '应用接入',
+    access: ['admin/AppGroup/index', 'admin/App/index']
+  },
+  component: Main,
+  children: [{
+    path: 'appsGroup',
+    name: 'apps_group',
+    meta: {
+      icon: 'ios-archive',
+      title: '应用分组',
+      access: 'admin/AppGroup/index'
+    },
+    component: () => import('@/view/app/group.vue')
+  },
+  {
+    path: 'appsList',
+    name: 'apps_list',
+    meta: {
+      icon: 'md-list-box',
+      title: '应用列表',
+      access: 'admin/App/index'
+    },
+    component: () => import('@/view/app/list.vue')
+  }
+  ]
+},
+{
+  path: '/interface',
+  name: 'interface_setting',
+  meta: {
+    icon: 'ios-link',
+    title: '接口管理',
+    access: ['admin/InterfaceList/index', 'admin/InterfaceGroup/index']
+  },
+  component: Main,
+  children: [{
+    path: 'interfaceGroup',
+    name: 'interface_group',
+    meta: {
+      icon: 'md-archive',
+      title: '接口分组',
+      access: 'admin/InterfaceGroup/index'
+    },
+    component: () => import('@/view/interface/group.vue')
+  },
+  {
+    path: 'interfaceList',
+    name: 'interface_list',
+    meta: {
+      icon: 'md-infinite',
+      title: '接口列表',
+      access: 'admin/InterfaceList/index'
+    },
+    component: () => import('@/view/interface/list.vue')
+  },
+  {
+    path: 'request/:hash',
+    meta: {
+      title: '请求参数',
+      hideInMenu: true
+    },
+    name: 'interface_request',
+    component: () => import('@/view/interface/request.vue')
+  },
+  {
+    path: 'response/:hash',
+    hideInMenu: true,
+    meta: {
+      hideInMenu: true,
+      title: '返回参数'
+    },
+    name: 'interface_response',
+    component: () => import('@/view/interface/response.vue')
+  }
+  ]
+},
+{
+  path: '/401',
+  name: 'error_401',
+  meta: {
+    hideInMenu: true
+  },
+  component: () => import('@/view/error-page/401.vue')
+},
+{
+  path: '/500',
+  name: 'error_500',
+  meta: {
+    hideInMenu: true
+  },
+  component: () => import('@/view/error-page/500.vue')
+},
+{
+  path: '*',
+  name: 'error_404',
+  meta: {
+    hideInMenu: true
+  },
+  component: () => import('@/view/error-page/404.vue')
+},
+{
+  path: '/wiki/list',
+  name: 'wiki_list',
+  meta: {
+    title: '文档列表',
+    hideInMenu: true
+  },
+  component: () => import('@/view/wiki/list.vue')
+},
+{
+  path: '/wiki/error',
+  name: 'wiki_error',
+  meta: {
+    title: '错误码',
+    hideInMenu: true
+  },
+  component: () => import('@/view/wiki/error-code.vue')
+},
+{
+  path: '/wiki/calculation',
+  name: 'wiki_calculation',
+  meta: {
+    title: '算法详解',
+    hideInMenu: true
+  },
+  component: () => import('@/view/wiki/calculation.vue')
+},
+{
+  path: '/wiki/login',
+  name: 'wiki_login',
+  meta: {
+    title: '文档登录',
+    hideInMenu: true
+  },
+  component: () => import('@/view/wiki/login.vue')
+},
+{
+  path: '/topic',
+  name: 'topic_manage',
+  meta: {
+    icon: 'md-bookmarks',
+    title: '超管课题管理',
+    access: ['admin/Topic/index', 'admin/Topic/set']
+  },
+  component: Main,
+  children: [{
+    path: 'list',
+    name: 'topic_list',
+    meta: {
+      icon: 'md-list-box',
+      title: '课题列表',
+      access: 'admin/Topic/index'
+    },
+    component: () => import('@/view/topic/list.vue')
+  },
+  {
+    path: 'set',
+    name: 'topic_set',
+    meta: {
+      icon: 'md-build',
+      title: '课题设置',
+      access: 'admin/Topic/set'
+    },
+    component: () => import('@/view/topic/set.vue')
+  }
+  ]
+},
+{
+  path: '/topic',
+  name: 'topic_teach_manage',
+  meta: {
+    icon: 'md-bookmarks',
+    title: '指导选题管理',
+    access: ['admin/Topic/add', 'admin/Topic/myList', 'admin/Topic/studentAudit']
+  },
+  component: Main,
+  children: [{
+    path: 'create',
+    name: 'topic_add',
+    meta: {
+      icon: 'md-add',
+      title: '创建选题',
+      access: 'admin/Topic/add'
+    },
+    component: () => import('@/view/topic/create.vue')
+  },
+  {
+    path: 'set',
+    name: 'topic_my',
+    meta: {
+      icon: 'md-list-box',
+      title: '我的选题',
+      access: 'admin/Topic/myList'
+    },
+    component: () => import('@/view/topic/myList.vue')
+  },
+  {
+    path: 'set',
+    name: 'topic_student_audit',
+    meta: {
+      icon: 'md-eye',
+      title: '学员选题审核',
+      access: 'admin/Topic/studentAudit'
+    },
+    component: () => import('@/view/topic/set.vue')
+  }
+  ]
+},
+{
+  path: '/topic',
+  name: 'topic_student_manage',
+  meta: {
+    icon: 'md-bookmarks',
+    title: '学员选题管理',
+    access: ['admin/Topic/index', 'admin/Topic/set']
+  },
+  component: Main,
+  children: [{
+    path: 'list',
+    name: 'topic_list',
+    meta: {
+      icon: 'md-list-box',
+      title: '课题列表',
+      access: 'admin/Topic/index'
+    },
+    component: () => import('@/view/topic/list.vue')
+  },
+  {
+    path: 'set',
+    name: 'topic_show',
+    meta: {
+      icon: 'ios-pricetag',
+      title: '查看选题进度',
+      access: 'admin/Topic/set'
+    },
+    component: () => import('@/view/topic/set.vue')
+  }
+  ]
+}
 ]

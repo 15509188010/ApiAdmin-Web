@@ -1,4 +1,4 @@
-import axios from '@/libs/api.request';
+import axios from '@/libs/api.request'
 
 /**
  * 获取课题组数据
@@ -10,4 +10,17 @@ export const getList = (params) => {
     method: 'get',
     params: params
   })
-};
+}
+
+/**
+ * 创建课题
+ * @param data
+ * @returns {wx.RequestTask | never}
+ */
+export const add = (data) => {
+  return axios.request({
+    url: 'topic/add',
+    method: 'post',
+    data
+  })
+}
