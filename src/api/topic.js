@@ -62,3 +62,19 @@ export const edit = (data) => {
     data
   })
 }
+
+/**
+ * 指导老师删除课题
+ * @param status
+ * @param id
+ * @returns {wx.RequestTask | never}
+ */
+export const del = (id) => {
+  return axios.request({
+    url: 'Topic/del',
+    method: 'get',
+    params: {
+      id: id
+    }
+  })
+}

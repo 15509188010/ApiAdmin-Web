@@ -112,7 +112,7 @@
 </template>
 <script>
 // import { getList, changeStatus, add, edit, del } from '@/api/topic'
-import { myList, add, updateEnableStatus, edit } from '@/api/topic'
+import { myList, add, updateEnableStatus, edit, del } from '@/api/topic'
 import { getHash } from '@/api/interface'
 import { baseUrl } from '@/libs/api.request'
 import { getToken } from '@/libs/util'
@@ -173,7 +173,7 @@ const deleteButton = (vm, h, currentRow, index) => {
       },
       on: {
         'on-ok': () => {
-          del(currentRow.hash).then(response => {
+          del(currentRow.id).then(response => {
             vm.tableData.splice(index, 1)
             vm.$Message.success(response.data.msg)
           })

@@ -77,6 +77,26 @@
 import { getList, add } from '@/api/topic'
 import { getHash } from '@/api/interface'
 
+const memberButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.changeStatus) {
+    return h('Button', {
+      props: {
+        type: 'primary'
+      },
+      style: {
+        margin: '0 5px'
+      },
+      on: {
+        'click': () => {
+          vm.memberSetting.show = true
+          vm.memberShow.gid = currentRow.id
+          vm.getMemberList()
+        }
+      }
+    }, '任务书')
+  }
+}
+
 const auditButton = (vm, h, currentRow, index) => {
   if (vm.buttonShow.edit) {
     return h('Button', {
@@ -185,8 +205,12 @@ export default {
         {
           title: '任务书',
           align: 'center',
-          key: 'taskBook',
-          width: 140
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              memberButton(this, h, params.row, params.index)
+            ])
+          }
         },
         {
           title: '添加人',

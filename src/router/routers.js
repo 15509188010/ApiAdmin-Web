@@ -301,16 +301,6 @@ export default [{
   },
   component: Main,
   children: [{
-    path: 'create',
-    name: 'topic_add',
-    meta: {
-      icon: 'md-add',
-      title: '创建选题',
-      access: 'admin/Topic/add'
-    },
-    component: () => import('@/view/topic/create.vue')
-  },
-  {
     path: 'myList',
     name: 'topic_my',
     meta: {
