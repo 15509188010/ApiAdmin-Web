@@ -24,3 +24,41 @@ export const add = (data) => {
     data
   })
 }
+
+/**
+ * 指导老师我的选题
+ */
+export const myList = (params) => {
+  return axios.request({
+    url: 'topic/myList',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 指导老师开启/禁用课题
+ */
+export const updateEnableStatus = (enableStatus, id) => {
+  return axios.request({
+    url: 'Topic/updateEnableStatus',
+    method: 'get',
+    params: {
+      enableStatus: enableStatus,
+      id: id
+    }
+  })
+}
+
+/**
+ * 指导老师编辑课题
+ * @param data
+ * @returns {wx.RequestTask | never}
+ */
+export const edit = (data) => {
+  return axios.request({
+    url: 'Topic/editTopic',
+    method: 'post',
+    data
+  })
+}

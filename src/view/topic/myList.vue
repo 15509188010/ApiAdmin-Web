@@ -112,31 +112,28 @@
 </template>
 <script>
 // import { getList, changeStatus, add, edit, del } from '@/api/topic'
-import { getList, add } from '@/api/topic'
+import { myList, add, updateEnableStatus, edit } from '@/api/topic'
 import { getHash } from '@/api/interface'
 import { baseUrl } from '@/libs/api.request'
 import { getToken } from '@/libs/util'
 
-const auditButton = (vm, h, currentRow, index) => {
-  if (vm.buttonShow.edit) {
+const memberButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.changeStatus) {
     return h('Button', {
       props: {
-        type: 'warning'
+        type: 'primary'
       },
       style: {
         margin: '0 5px'
       },
       on: {
         'click': () => {
-          vm.formItem.id = currentRow.id
-          vm.formItem.name = currentRow.name
-          vm.formItem.hash = currentRow.hash
-          vm.formItem.description = currentRow.description
-          vm.modalSetting.show = true
-          vm.modalSetting.index = index
+          vm.memberSetting.show = true
+          vm.memberShow.gid = currentRow.id
+          vm.getMemberList()
         }
       }
-    }, vm.$t('audit_button'))
+    }, '任务书')
   }
 }
 
@@ -152,9 +149,12 @@ const editButton = (vm, h, currentRow, index) => {
       on: {
         'click': () => {
           vm.formItem.id = currentRow.id
-          vm.formItem.name = currentRow.name
-          vm.formItem.hash = currentRow.hash
-          vm.formItem.description = currentRow.description
+          vm.formItem.title = currentRow.title
+          vm.formItem.code = currentRow.code
+          vm.formItem.taskBookDes = currentRow.taskBookDes
+          vm.formItem.enableStatus = currentRow.enableStatus
+          vm.formItem.college = currentRow.collegeId
+          vm.formItem.taskBook = currentRow.taskBook
           vm.modalSetting.show = true
           vm.modalSetting.index = index
         }
@@ -162,6 +162,7 @@ const editButton = (vm, h, currentRow, index) => {
     }, vm.$t('edit_button'))
   }
 }
+
 const deleteButton = (vm, h, currentRow, index) => {
   if (vm.buttonShow.del) {
     return h('Poptip', {
@@ -216,7 +217,7 @@ export default {
           title: '题目',
           align: 'center',
           key: 'title',
-          width: 150
+          minWidth: 150
         },
         {
           title: '学院',
@@ -227,8 +228,12 @@ export default {
         {
           title: '任务书',
           align: 'center',
-          key: 'taskBook',
-          width: 140
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              memberButton(this, h, params.row, params.index)
+            ])
+          }
         },
         {
           title: '添加人',
@@ -237,23 +242,37 @@ export default {
           width: 120
         },
         {
-          title: '审核状态',
+          title: '状态',
           align: 'center',
           width: 100,
           render: (h, params) => {
-            if (params.row.auditStatus === 5) {
-              return h('Tag', {
-                props: {
-                  'color': 'green'
+            let vm = this
+            return h('i-switch', {
+              attrs: {
+                size: 'large'
+              },
+              props: {
+                'true-value': 5,
+                'false-value': 4,
+                value: params.row.enableStatus,
+                disabled: !vm.buttonShow.changeStatus
+              },
+              on: {
+                'on-change': function (enableStatus) {
+                  updateEnableStatus(enableStatus, params.row.id).then(response => {
+                    vm.$Message.success(response.data.msg)
+                    vm.myList()
+                  })
                 }
-              }, '已审核')
-            } else {
-              return h('Tag', {
-                props: {
-                  'color': 'red'
-                }
-              }, '未审核')
-            }
+              }
+            }, [
+              h('span', {
+                slot: 'open'
+              }, vm.$t('open_choose')),
+              h('span', {
+                slot: 'close'
+              }, vm.$t('close_choose'))
+            ])
           }
         },
         {
@@ -262,7 +281,6 @@ export default {
           width: 250,
           render: (h, params) => {
             return h('div', [
-              auditButton(this, h, params.role, params.index),
               editButton(this, h, params.row, params.index),
               deleteButton(this, h, params.row, params.index)
             ])
@@ -309,8 +327,8 @@ export default {
   },
   created () {
     let vm = this
-    vm.getList()
-    vm.hasRule('AppGroup/edit').then(res => {
+    vm.myList()
+    /** vm.hasRule('AppGroup/edit').then(res => {
       vm.buttonShow.edit = res
     })
     vm.hasRule('AppGroup/del').then(res => {
@@ -318,7 +336,7 @@ export default {
     })
     vm.hasRule('AppGroup/changeStatus').then(res => {
       vm.buttonShow.changeStatus = res
-    })
+    }) */
   },
   methods: {
     alertAdd () {
@@ -336,7 +354,7 @@ export default {
           if (vm.formItem.id === 0) {
             add(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
-              vm.getList()
+              vm.myList()
               vm.cancel()
             }).catch(() => {
               vm.modalSetting.loading = false
@@ -344,7 +362,7 @@ export default {
           } else {
             edit(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
-              vm.getList()
+              vm.myList()
               vm.cancel()
             }).catch(() => {
               vm.modalSetting.loading = false
@@ -358,20 +376,20 @@ export default {
     },
     changePage (page) {
       this.tableShow.currentPage = page
-      this.getList()
+      this.myList()
     },
     changeSize (size) {
       this.tableShow.pageSize = size
-      this.getList()
+      this.myList()
     },
     search () {
       this.tableShow.currentPage = 1
-      this.getList()
+      this.myList()
     },
-    getList () {
+    myList () {
       let vm = this
       vm.listLoading = true
-      getList({
+      myList({
         page: vm.tableShow.currentPage,
         size: vm.tableShow.pageSize,
         type: vm.searchConf.type,

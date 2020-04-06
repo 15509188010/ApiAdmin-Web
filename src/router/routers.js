@@ -297,7 +297,7 @@ export default [{
   meta: {
     icon: 'md-bookmarks',
     title: '指导选题管理',
-    access: ['admin/Topic/add', 'admin/Topic/myList', 'admin/Topic/studentAudit']
+    access: ['admin/Topic/add', 'admin/Topic/myList', 'admin/Topic/updateStatus', 'admin/Topic/studentAudit']
   },
   component: Main,
   children: [{
@@ -311,7 +311,7 @@ export default [{
     component: () => import('@/view/topic/create.vue')
   },
   {
-    path: 'set',
+    path: 'myList',
     name: 'topic_my',
     meta: {
       icon: 'md-list-box',
